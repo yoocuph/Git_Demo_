@@ -113,15 +113,16 @@ SELECT
 		o.customer_id, 
 		c.full_name, 
 		count(o.order_id) order_count,
-		order_date last_order_date,
-		LAG() OVER (PARTITION BY c.full_name ORDER BY o.order_date) as jdjijdij
+		MIN(order_date) first_order_date,
+		MAX(order_date) last_order_date
+		--LAG() OVER (PARTITION BY c.full_name ORDER BY o.order_date) as jdjijdij
 		-- ROW_NUMBER() OVER (PARTITION BY c.full_name ORDER BY o.order_id) as nth_order
 FROM customers c
 LEFT JOIN orders o
 ON o.customer_id = c.customer_id
 -- WHERE order_id IS NOT NULL  -- getting all customers with at least one order
-GROUP BY 1,2, o.order_id, order_date
-
+GROUP BY 1,2
+HAVING count(o.order_id) > 1
 
 
 -- ----------------------------------------------------------------
